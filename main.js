@@ -9,8 +9,8 @@ var fs = require('fs');
 var sutil = require('./subtitle_util');
 
 var videoLinksFile = "WWDC2015_links.txt";
-var subtitlesFolderForHD = "subtitles/HD/";
-var subtitlesFolderForSD = "subtitles/SD/";
+var subtitlesFolderForHD = "subtitles/zho/HD/";
+var subtitlesFolderForSD = "subtitles/zho/SD/";
 
 var videoURLRegex = /(http:\/\/devstreaming.apple.com\/videos\/wwdc\/2015\/\w+\/\d+\/)(\w+)\.mp4\?dl=1/;
 async.waterfall([
@@ -65,14 +65,14 @@ async.waterfall([
                 callback(null, videoInfo);
             } else {
                 console.log("start download subtitle index file of " + videoInfo.videoNameWithOutExtension);
-                var videoSubtitleIndexFileURL = videoInfo.videoURLPrefix + "subtitles/eng/prog_index.m3u8";
+                var videoSubtitleIndexFileURL = videoInfo.videoURLPrefix + "subtitles/zho/prog_index.m3u8";
                 request(videoSubtitleIndexFileURL, function (err, response, body) {
                     if (!err && response.statusCode === 200) {
                         var webvttFileNames = body.split("\n").filter(function(line, index) {
                             return line.indexOf("fileSequence") === 0;
                         });
                         webvttFileNames = webvttFileNames.map(function (fileName) {
-                            return videoInfo.videoURLPrefix + "subtitles/eng/"+ fileName;
+                            return videoInfo.videoURLPrefix + "subtitles/zho/"+ fileName;
                         });
                         videoInfo.webvttFileNames = webvttFileNames;
                     } else {
@@ -154,6 +154,7 @@ async.waterfall([
                 succeedCount += (!videoInfo.errorMessage ? 1 : 0);
             }
             //if you want error messages, just log down videoInfo.errorMessage
+            console.log(videoInfo.errorMessage);
         });
 
         console.log("======================Finished, success rate: " + succeedCount + "/" + (totalCount - skippedCount) +
